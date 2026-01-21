@@ -110,14 +110,10 @@ jobs:
             artifact_name: 'zap_scan'
             fail_action: false
 
-      - name: Prepare security tests directory
-        run: mkdir -p security-test-reports
-
-      - run: echo hello > security-test-reports/security.txt
       - uses: actions/upload-artifact@v4
         with:
           name: my-artifact
-          path: security-test-reports/security.txt
+          path: report_*.*
 
       - name: Stop the application
         if: always()
