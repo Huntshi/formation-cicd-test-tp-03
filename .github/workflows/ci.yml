@@ -45,10 +45,11 @@ jobs:
             --add-host=host.docker.internal:host-gateway \
             -v ${{ github.workspace }}:/work \
             ghcr.io/orange-opensource/hurl:latest \
-            --test /work/src/test/java/api \
+            --test \
             --report-junit /work/api-test-reports/junit.xml \
             --report-html /work/api-test-reports/report.html \
             --report-json /work/api-test-reports/report.json \
+          /work/src/test/java/api
 
       - name: Stop the application
         if: always()
@@ -66,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: url-test-reports
-          path: 'hurl-report.xml'
+          path: url-test-reports
 
   security-tests:
     needs: api-tests
