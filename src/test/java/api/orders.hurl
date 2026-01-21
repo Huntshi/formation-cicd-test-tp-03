@@ -1,4 +1,4 @@
-GET http://localhost:8080/api/orders
+GET http://host.docker.internal:8080/api/orders
 HTTP 200
 [Asserts]
 jsonpath "$.[0].id" == "1"
