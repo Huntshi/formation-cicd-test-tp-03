@@ -66,8 +66,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: url-test-reports
-          path: url-test-reports
+          name: api-test-reports
+          path: api-test-reports
 
   security-tests:
     needs: api-tests
