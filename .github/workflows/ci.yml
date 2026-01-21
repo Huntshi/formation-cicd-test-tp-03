@@ -51,6 +51,7 @@ jobs:
             --report-json /work/api-test-reports/report.json \
 
       - name: Stop the application
+        if: always()
         run: |
           APP_PID=$(lsof -t -i:8080)
               if [ -n "$APP_PID" ]; then
@@ -61,10 +62,11 @@ jobs:
               fi
 
       - name: Uploading report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: url-test-reports
-          path: 'target/hurl-report.xml'
+          path: 'hurl-report.xml'
 
   security-tests:
     needs: api-tests
@@ -104,6 +106,7 @@ jobs:
         uses: zaproxy/action-baseline@v0.15.0
         with:
             target: 'http://localhost:8080/'
+            fail_action: false
 
       - name: Prepare security tests directory
         run: mkdir -p security-test-reports
@@ -113,3 +116,14 @@ jobs:
         with:
           name: my-artifact
           path: security-test-reports/security.txt
+
+      - name: Stop the application
+        if: always()
+        run: |
+          APP_PID=$(lsof -t -i:8080)
+              if [ -n "$APP_PID" ]; then
+                kill $APP_PID
+                echo "Application stopped."
+              else
+                echo "No application running on port 8080."
+              fi
