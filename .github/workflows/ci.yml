@@ -51,6 +51,13 @@ jobs:
             --report-json /work/api-test-reports/report.json \
           /work/src/test/java/api
 
+      - name: Uploading report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-reports
+          path: api-test-reports
+
       - name: Stop the application
         if: always()
         run: |
@@ -62,19 +69,13 @@ jobs:
                 echo "No application running on port 8080."
               fi
 
-      - name: Uploading report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-test-reports
-          path: api-test-reports
-
   security-tests:
     needs: api-tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout du repository
         uses: actions/checkout@v4
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -104,16 +105,22 @@ jobs:
           exit 1
 
       - name: ZAP Scan
+        if: always()
         uses: zaproxy/action-baseline@v0.15.0
         with:
             target: 'http://localhost:8080/'
             artifact_name: 'zap_scan'
             fail_action: false
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload ZAP reports
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
-          path: report_*.*
+          name: zap-reports
+          path: |
+              report_html.html
+              report_md.md
+              report_json.json
 
       - name: Stop the application
         if: always()
